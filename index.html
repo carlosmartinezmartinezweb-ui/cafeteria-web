@@ -2,14 +2,23 @@
 <html lang="es" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/924/924514.png" />
+    <meta name="description" content="Café Central — Experiencia completa de café de especialidad, brunch y repostería artesanal. Reserva y descubre nuestro ambiente premium." />
+    <meta name="keywords" content="café de especialidad, brunch, cafetería premium, café origen, repostería" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#120C09" />
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/924/924514.png" />
+    
     <title>Café Central | Elite Experience</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Iconos Phosphor -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
     <link
-      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
 
@@ -19,35 +28,49 @@
           extend: {
             colors: {
               coffee: {
-                900: "#120C09",
-                800: "#2C1B12",
-                100: "#F9F5F2",
+                900: "#120C09", // Almost black
+                800: "#2C1B12", // Dark Roast
+                700: "#4A3B32",
+                100: "#F9F5F2", // Cream
               },
               gold: {
                 400: "#C49B63",
                 500: "#B08D55",
+                600: "#8C6B3D",
               },
             },
             fontFamily: {
               serif: ['"Playfair Display"', "serif"],
               sans: ['"Inter"', "sans-serif"],
             },
+            letterSpacing: {
+              'mega': '0.5em',
+            }
           },
         },
       };
     </script>
 
     <style>
+      /* --- CORRECCIÓN 1: Eliminado Scroll Snap para evitar "trompicones" --- */
+      /* Ahora el scroll es 100% fluido y natural */
+      
       body {
         background-color: #fdfbf7;
         color: #120c09;
+        /* Aseguramos que no haya scroll horizontal accidental */
+        overflow-x: hidden;
+      }
+      
+      html {
+        overflow-x: hidden;
       }
 
-      /* Animaciones de entrada */
+      /* Animaciones de entrada mejoradas */
       .reveal {
         opacity: 0;
-        transform: translateY(30px);
-        transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        transform: translateY(40px);
+        transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
       }
 
       .reveal.active {
@@ -62,20 +85,38 @@
       }
 
       .img-zoom img {
-        transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
       }
 
       .img-zoom:hover img {
-        transform: scale(1.1);
+        transform: scale(1.05);
       }
 
-      /* Glassmorphism para el Nav */
+      /* Navbar Glassmorphism */
       .nav-scrolled {
-        background-color: rgba(18, 12, 9, 0.9);
-        backdrop-filter: blur(10px);
-        padding-top: 1rem;
-        padding-bottom: 1rem;
-        border-bottom: 1px solid rgba(196, 155, 99, 0.2);
+        background-color: rgba(18, 12, 9, 0.85);
+        backdrop-filter: blur(12px);
+        padding-top: 1rem !important;
+        padding-bottom: 1rem !important;
+        border-bottom: 1px solid rgba(196, 155, 99, 0.15);
+        box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+      }
+
+      .active-link {
+        color: #C49B63 !important; /* Gold 400 */
+        position: relative;
+      }
+      
+      .active-link::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 4px;
+        height: 4px;
+        background-color: #C49B63;
+        border-radius: 50%;
       }
 
       .chart-container {
@@ -83,105 +124,147 @@
         width: 100%;
         height: 300px;
       }
+
+      ::selection {
+        background: #C49B63;
+        color: #120C09;
+      }
     </style>
   </head>
-  <body class="font-sans antialiased overflow-x-hidden">
+  <body class="font-sans antialiased selection:bg-gold-400 selection:text-coffee-900">
+
+    <!-- CORRECCIÓN 2: Añadido 'hidden' para que no aparezca fantasma a la derecha -->
+    <div id="toast" class="hidden fixed top-24 right-8 bg-white border-l-4 border-gold-400 text-coffee-900 px-6 py-4 shadow-2xl rounded-r transform translate-x-full transition-transform duration-500 z-50 items-center gap-4">
+      <i class="ph-fill ph-check-circle text-2xl text-green-600"></i>
+      <div>
+        <h4 class="font-serif font-bold text-lg">Solicitud Recibida</h4>
+        <p class="text-xs text-gray-500">Nos pondremos en contacto contigo.</p>
+      </div>
+    </div>
 
     <nav
       id="navbar"
-      class="fixed w-full z-50 transition-all duration-500 py-6 px-8 lg:px-16 flex justify-between items-center text-white"
+      class="fixed w-full z-50 transition-all duration-500 py-8 px-6 lg:px-16 flex justify-between items-center text-white"
     >
-      <div class="text-2xl font-serif font-bold tracking-tighter">
-        CENTRAL <span class="text-gold-400 italic">EST. 24</span>
+      <div class="flex items-center gap-3">
+        <svg class="w-8 h-8 text-gold-400" fill="currentColor" viewBox="0 0 24 24"><path d="M2,21H20V19H2M20,8H18V5H20M20,3H4V13A4,4 0 0,0 8,17H14A4,4 0 0,0 18,13V10H20A2,2 0 0,0 22,8V5C22,3.89 21.1,3 20,3Z" /></svg>
+        <div class="text-xl md:text-2xl font-serif font-bold tracking-tighter">
+          CENTRAL <span class="text-gold-400 italic font-light">EST. 24</span>
+        </div>
       </div>
 
-      <ul
-        class="hidden md:flex gap-10 text-[10px] uppercase tracking-[0.3em] font-bold"
-      >
-        <li>
-          <a href="#inicio" class="hover:text-gold-400 transition-colors"
-            >Inicio</a
-          >
-        </li>
-        <li>
-          <a href="#filosofia" class="hover:text-gold-400 transition-colors"
-            >Filosofía</a
-          >
-        </li>
-        <li>
-          <a href="#experiencia" class="hover:text-gold-400 transition-colors"
-            >Experiencia</a
-          >
-        </li>
-        <li>
-          <a
-            href="#contacto"
-            class="px-6 py-2 border border-white hover:bg-gold-400 hover:border-gold-400 transition-all"
-            >Reserva</a
-          >
-        </li>
+      <ul class="hidden md:flex gap-12 text-[11px] uppercase tracking-[0.3em] font-semibold text-gray-300">
+        <li><a href="#inicio" class="nav-link hover:text-white transition-colors duration-300">Inicio</a></li>
+        <li><a href="#filosofia" class="nav-link hover:text-white transition-colors duration-300">Filosofía</a></li>
+        <li><a href="#experiencia" class="nav-link hover:text-white transition-colors duration-300">Menú</a></li>
+        <li><a href="#visitas" class="nav-link hover:text-white transition-colors duration-300">Visitas</a></li>
       </ul>
+
+      <a
+        href="#contacto"
+        class="hidden md:block px-8 py-3 border border-white/30 hover:bg-gold-400 hover:border-gold-400 hover:text-coffee-900 transition-all text-[10px] uppercase tracking-widest font-bold"
+      >
+        Reservar Mesa
+      </a>
+      
+      <button class="md:hidden text-2xl text-white">
+        <i class="ph ph-list"></i>
+      </button>
     </nav>
 
 
     <header
       id="inicio"
-      class="relative h-screen flex items-center justify-center overflow-hidden"
+      class="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden"
     >
       <div class="absolute inset-0">
         <img
           src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=80&w=2000"
-          alt="Cafetería Premium"
-          class="w-full h-full object-cover"
+          alt="Interior de Cafetería Premium con luz tenue"
+          class="w-full h-full object-cover animate-pan"
         />
-        <div class="absolute inset-0 bg-coffee-900/50"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-coffee-900/70 via-coffee-900/40 to-coffee-900/90"></div>
       </div>
 
       <div class="relative z-10 text-center text-white px-6 reveal active">
-        <span
-          class="text-gold-400 text-xs uppercase tracking-[0.5em] mb-4 block"
-          >Especialidad de Origen</span
-        >
-        <h1 class="text-6xl md:text-9xl font-serif mb-8 leading-none">
-          El Alma del <br /><span class="italic text-gold-400">Grano</span>
+        <div class="inline-flex items-center gap-4 mb-6 opacity-80">
+          <span class="h-px w-8 bg-gold-400"></span>
+          <span class="text-gold-400 text-xs uppercase tracking-mega">Madrid · 2024</span>
+          <span class="h-px w-8 bg-gold-400"></span>
+        </div>
+        
+        <h1 class="text-5xl md:text-8xl lg:text-9xl font-serif mb-8 leading-[0.9] tracking-tight">
+          El Alma del <br /><span class="italic text-gold-400 font-light">Grano</span>
         </h1>
-        <div class="h-12 w-px bg-gold-400 mx-auto animate-pulse"></div>
+        
+        <p class="max-w-md mx-auto text-gray-300 text-sm md:text-base leading-relaxed mb-12 font-light">
+            Donde la ingeniería del tueste se encuentra con la artesanía del barista. Una experiencia sensorial diseñada para los puristas.
+        </p>
+
+        <div class="flex flex-col md:flex-row gap-6 justify-center items-center">
+            <a href="#experiencia" class="group relative px-8 py-4 bg-gold-400 text-coffee-900 font-bold text-xs uppercase tracking-widest overflow-hidden">
+                <span class="relative z-10 group-hover:text-white transition-colors">Ver Carta</span>
+                <div class="absolute inset-0 bg-coffee-900 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300 ease-out"></div>
+            </a>
+            <span class="text-xs uppercase tracking-widest text-white/60">Abierto: 07:00 - 22:00</span>
+        </div>
+      </div>
+      
+      <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce text-white/30">
+        <i class="ph ph-arrow-down text-2xl"></i>
       </div>
     </header>
 
 
-    <section id="filosofia" class="py-32 px-8 bg-white">
+    <section id="filosofia" class="py-32 px-6 lg:px-16 bg-white overflow-hidden">
       <div
         class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-24 items-center"
       >
         <div class="reveal">
           <span
-            class="text-gold-500 font-bold text-[10px] uppercase tracking-[0.4em] mb-4 block"
-            >Nuestra Ciencia</span
+            class="text-gold-500 font-bold text-[10px] uppercase tracking-[0.4em] mb-4 block flex items-center gap-2"
           >
-          <h2 class="text-5xl font-serif mb-8 leading-tight">
-            Artesanía en <br /><span class="italic text-gold-500"
+            <span class="w-2 h-2 bg-gold-500 rounded-full"></span> Nuestra Ciencia
+          </span>
+          <h2 class="text-5xl md:text-6xl font-serif mb-8 leading-none text-coffee-900">
+            Artesanía en <br /><span class="italic text-gold-500 font-light"
               >Cada Extracción</span
             >
           </h2>
-          <p class="text-gray-600 leading-relaxed mb-8">
-            Utilizamos tecnología de tueste por aire para garantizar que los
-            aceites naturales del café se mantengan intactos. El resultado es un
-            perfil de sabor limpio, vibrante y sin amargores innecesarios.
+          <p class="text-gray-600 leading-relaxed mb-8 font-light text-lg">
+            No servimos café, servimos precisión. Utilizamos tecnología de tueste por aire fluidizado Loring™ para garantizar que los aceites naturales se mantengan intactos.
           </p>
+          
+          <ul class="space-y-4 mb-8">
+            <li class="flex items-start gap-4">
+                <i class="ph-fill ph-check-circle text-gold-500 mt-1"></i>
+                <div>
+                    <strong class="block text-coffee-900 text-sm uppercase tracking-widest">Trazabilidad Total</strong>
+                    <span class="text-gray-500 text-sm">Desde la finca en Etiopía hasta tu taza.</span>
+                </div>
+            </li>
+            <li class="flex items-start gap-4">
+                <i class="ph-fill ph-drop text-gold-500 mt-1"></i>
+                <div>
+                    <strong class="block text-coffee-900 text-sm uppercase tracking-widest">Agua Osmotizada</strong>
+                    <span class="text-gray-500 text-sm">Mineralización controlada para la extracción perfecta.</span>
+                </div>
+            </li>
+          </ul>
+
           <div class="grid grid-cols-2 gap-8 pt-8 border-t border-gray-100">
             <div>
-              <span class="block text-3xl font-serif text-coffee-800">85+</span>
+              <span class="block text-4xl font-serif text-coffee-800">88+</span>
               <span class="text-[9px] uppercase tracking-widest text-gray-400"
-                >Puntos SCA</span
+                >Puntos SCA (Excelencia)</span
               >
             </div>
             <div>
-              <span class="block text-3xl font-serif text-coffee-800"
+              <span class="block text-4xl font-serif text-coffee-800"
                 >100%</span
               >
               <span class="text-[9px] uppercase tracking-widest text-gray-400"
-                >Trazable</span
+                >Comercio Justo</span
               >
             </div>
           </div>
@@ -189,16 +272,21 @@
 
         <div class="reveal delay-200">
           <div
-            class="bg-coffee-100 p-12 rounded-[40px] shadow-2xl shadow-coffee-900/5 border border-gray-100"
+            class="bg-coffee-100/50 p-8 md:p-12 rounded-[2rem] shadow-2xl shadow-coffee-900/5 border border-white backdrop-blur-sm relative"
           >
+            <div class="absolute -top-6 -right-6 bg-coffee-900 text-gold-400 rounded-full w-24 h-24 flex flex-col items-center justify-center shadow-lg border-4 border-white animate-spin-slow">
+                 <span class="text-[8px] uppercase tracking-widest">House</span>
+                 <span class="font-serif text-2xl italic">Blend</span>
+            </div>
+
             <div class="text-center mb-8">
-              <h3 class="text-xl font-serif font-bold italic">
-                Perfil de Sabor
+              <h3 class="text-2xl font-serif font-bold italic text-coffee-900">
+                Perfil de Sabor Actual
               </h3>
               <p
-                class="text-[9px] text-gray-400 uppercase tracking-widest mt-2"
+                class="text-[10px] text-gray-500 uppercase tracking-widest mt-2"
               >
-                Equilibrio Técnico del Tueste
+                Lote: Colombia Huila · Lavado
               </p>
             </div>
             <div class="chart-container">
@@ -209,192 +297,336 @@
       </div>
     </section>
 
-   
-    <section id="experiencia" class="py-32 px-8 bg-coffee-900 text-white">
-      <div class="max-w-7xl mx-auto">
+    
+    <section id="experiencia" class="py-32 px-6 lg:px-16 bg-coffee-900 text-white relative">
+      <div class="absolute top-0 right-0 w-1/3 h-full bg-coffee-800/30 skew-x-12 pointer-events-none"></div>
+
+      <div class="max-w-7xl mx-auto relative z-10">
         <div
           class="flex flex-col md:flex-row justify-between items-end mb-20 reveal"
         >
           <div>
             <span
               class="text-gold-400 text-xs uppercase tracking-[0.3em] block mb-4"
-              >Servicios</span
+              >Selección de Temporada</span
             >
-            <h2 class="text-6xl font-serif italic">La Experiencia</h2>
+            <h2 class="text-5xl md:text-7xl font-serif italic">La Carta</h2>
           </div>
           <p
-            class="text-gray-400 max-w-xs text-right text-sm leading-relaxed mt-6"
+            class="text-gray-400 max-w-xs md:text-right text-sm leading-relaxed mt-6"
           >
-            Diseñamos cada detalle para que el café sea el protagonista de tu
-            día.
+            Precios honestos para productos excepcionales. Calidad sin pretensiones.
           </p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        
-          <div
-            class="reveal img-zoom rounded-3xl group cursor-pointer overflow-hidden"
-          >
-            <img
-              src="https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&q=80&w=800"
-              alt="Espresso"
-              class="w-full h-full object-cover aspect-[3/4]"
-            />
-            <div
-              class="absolute inset-0 bg-black/40 group-hover:bg-black/10 transition-all flex flex-col justify-end p-10"
-            >
-              <h3 class="text-2xl font-serif font-bold text-gold-400">
-                Especialidad
-              </h3>
-              <p
-                class="text-xs uppercase tracking-widest mt-2 opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                Grano de Etiopía
-              </p>
+          
+          <div class="reveal img-zoom group cursor-pointer">
+            <div class="relative rounded-t-[2rem] overflow-hidden aspect-[4/5]">
+                <img
+                  src="https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&q=80&w=800"
+                  alt="Taza de espresso perfecta sobre mesa oscura"
+                  loading="lazy"
+                  class="w-full h-full object-cover"
+                />
+                <div class="absolute top-6 right-6 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20">
+                    <span class="text-gold-400 font-serif font-bold text-lg">2.50€</span>
+                </div>
+            </div>
+            <div class="bg-coffee-800 p-8 rounded-b-[2rem] border-t border-white/5 group-hover:bg-coffee-700 transition-colors">
+                <h3 class="text-2xl font-serif font-bold text-white mb-2">Double Espresso</h3>
+                <p class="text-gray-400 text-sm mb-4">Notas de chocolate negro y frutos rojos. Cuerpo intenso.</p>
+                <span class="text-[10px] uppercase tracking-widest text-gold-400 border-b border-gold-400/30 pb-1">Ver detalles</span>
             </div>
           </div>
-        
-          <div
-            class="reveal delay-100 img-zoom rounded-3xl group cursor-pointer overflow-hidden md:translate-y-12"
-          >
-            <img
-              src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&q=80&w=800"
-              alt="Pastelería"
-              class="w-full h-full object-cover aspect-[3/4]"
-            />
-            <div
-              class="absolute inset-0 bg-black/40 group-hover:bg-black/10 transition-all flex flex-col justify-end p-10"
-            >
-              <h3 class="text-2xl font-serif font-bold text-gold-400">
-                Obrador
-              </h3>
-              <p
-                class="text-xs uppercase tracking-widest mt-2 opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                Fermentación Natural
-              </p>
+          
+          <div class="reveal delay-100 img-zoom group cursor-pointer md:-translate-y-12">
+            <div class="relative rounded-t-[2rem] overflow-hidden aspect-[4/5]">
+                <img
+                  src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&q=80&w=800"
+                  alt="Croissant artesanal recién horneado"
+                  loading="lazy"
+                  class="w-full h-full object-cover"
+                />
+                 <div class="absolute top-6 right-6 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20">
+                    <span class="text-gold-400 font-serif font-bold text-lg">3.80€</span>
+                </div>
+            </div>
+            <div class="bg-coffee-800 p-8 rounded-b-[2rem] border-t border-white/5 group-hover:bg-coffee-700 transition-colors">
+                <h3 class="text-2xl font-serif font-bold text-white mb-2">Pain au Chocolat</h3>
+                <p class="text-gray-400 text-sm mb-4">Mantequilla AOP francesa, fermentación de 48 horas.</p>
+                <span class="text-[10px] uppercase tracking-widest text-gold-400 border-b border-gold-400/30 pb-1">Ver detalles</span>
             </div>
           </div>
-         
-          <div
-            class="reveal delay-200 img-zoom rounded-3xl group cursor-pointer overflow-hidden"
-          >
-            <img
-              src="https://images.unsplash.com/photo-1497935586351-b67a49e012bf?auto=format&fit=crop&q=80&w=800"
-              alt="V60"
-              class="w-full h-full object-cover aspect-[3/4]"
-            />
-            <div
-              class="absolute inset-0 bg-black/40 group-hover:bg-black/10 transition-all flex flex-col justify-end p-10"
-            >
-              <h3 class="text-2xl font-serif font-bold text-gold-400">
-                Filtrado
-              </h3>
-              <p
-                class="text-xs uppercase tracking-widest mt-2 opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                Métodos Artesanales
-              </p>
+          
+          <div class="reveal delay-200 img-zoom group cursor-pointer">
+            <div class="relative rounded-t-[2rem] overflow-hidden aspect-[4/5]">
+                <img
+                  src="https://images.unsplash.com/photo-1497935586351-b67a49e012bf?auto=format&fit=crop&q=80&w=800"
+                  alt="Preparación de café de filtro V60"
+                  loading="lazy"
+                  class="w-full h-full object-cover"
+                />
+                 <div class="absolute top-6 right-6 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20">
+                    <span class="text-gold-400 font-serif font-bold text-lg">4.50€</span>
+                </div>
+            </div>
+             <div class="bg-coffee-800 p-8 rounded-b-[2rem] border-t border-white/5 group-hover:bg-coffee-700 transition-colors">
+                <h3 class="text-2xl font-serif font-bold text-white mb-2">V60 Filter</h3>
+                <p class="text-gray-400 text-sm mb-4">Extracción lenta manual. Ideal para apreciar matices florales.</p>
+                <span class="text-[10px] uppercase tracking-widest text-gold-400 border-b border-gold-400/30 pb-1">Ver detalles</span>
             </div>
           </div>
+
         </div>
       </div>
     </section>
 
-    <section class="py-32 px-8 bg-coffee-100">
-      <div class="max-w-4xl mx-auto text-center reveal">
-        <h2 class="text-4xl font-serif mb-16 italic text-coffee-900">
-          Planifica tu Momento
-        </h2>
+    <section id="visitas" class="py-32 px-6 lg:px-16 bg-coffee-100">
+      <div class="max-w-5xl mx-auto reveal">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-serif mb-6 italic text-coffee-900">
+              Planifica tu Momento
+            </h2>
+            <p class="text-gray-600 max-w-xl mx-auto">
+                Para garantizar la tranquilidad y el ambiente, mostramos nuestra afluencia estimada en tiempo real.
+            </p>
+        </div>
+
         <div
-          class="bg-white p-12 rounded-[30px] shadow-2xl border border-gray-100"
+          class="bg-white p-6 md:p-12 rounded-[30px] shadow-xl border border-gray-100"
         >
-          <div class="flex gap-4 mb-10 justify-center">
-            <button
-              class="day-btn active px-6 py-2 rounded-full bg-coffee-800 text-white text-[9px] uppercase tracking-widest font-bold"
-              data-day="0"
-            >
-              Lunes - Viernes
-            </button>
-            <button
-              class="day-btn px-6 py-2 rounded-full bg-gray-100 text-gray-400 text-[9px] uppercase tracking-widest font-bold"
-              data-day="1"
-            >
-              Sábados - Domingos
-            </button>
+          <div class="flex flex-wrap gap-4 mb-10 justify-between items-center border-b border-gray-100 pb-6">
+            <div>
+                 <h4 class="font-bold text-coffee-900 uppercase tracking-widest text-xs mb-1">Afluencia Estimada</h4>
+                 <p class="text-xs text-gray-500">Basado en datos históricos</p>
+            </div>
+            <div class="flex gap-2 bg-coffee-100 p-1 rounded-full">
+                <button
+                  class="day-btn active px-6 py-2 rounded-full bg-coffee-800 text-white text-[9px] uppercase tracking-widest font-bold transition-all shadow-lg"
+                  data-day="0"
+                >
+                  Laborables
+                </button>
+                <button
+                  class="day-btn px-6 py-2 rounded-full text-gray-500 hover:text-coffee-900 text-[9px] uppercase tracking-widest font-bold transition-all"
+                  data-day="1"
+                >
+                  Fines de Semana
+                </button>
+            </div>
           </div>
           <div class="chart-container">
             <canvas id="trafficChart"></canvas>
           </div>
         </div>
+        
+        <div class="flex justify-center gap-8 md:gap-16 mt-16 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
+            <div class="text-center">
+                <i class="ph ph-wifi-high text-3xl mb-2 text-coffee-800"></i>
+                <span class="block text-[10px] uppercase tracking-widest">Free Wifi</span>
+            </div>
+             <div class="text-center">
+                <i class="ph ph-paw-print text-3xl mb-2 text-coffee-800"></i>
+                <span class="block text-[10px] uppercase tracking-widest">Pet Friendly</span>
+            </div>
+             <div class="text-center">
+                <i class="ph ph-plant text-3xl mb-2 text-coffee-800"></i>
+                <span class="block text-[10px] uppercase tracking-widest">Vegan Options</span>
+            </div>
+             <div class="text-center">
+                <i class="ph ph-book-open text-3xl mb-2 text-coffee-800"></i>
+                <span class="block text-[10px] uppercase tracking-widest">Work Zone</span>
+            </div>
+        </div>
       </div>
     </section>
 
-    <footer id="contacto" class="bg-coffee-900 text-white pt-32 pb-12 px-8">
+    <footer id="contacto" class="bg-coffee-900 text-white pt-32 pb-12 px-6 lg:px-16 border-t border-white/5">
       <div
         class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-24 mb-32"
       >
         <div class="reveal">
           <h2
-            class="text-7xl font-serif leading-none mb-12 italic text-gold-400"
+            class="text-6xl md:text-8xl font-serif leading-none mb-12 italic text-gold-400"
           >
             Reserva.
           </h2>
           <div
-            class="space-y-6 text-sm uppercase tracking-[0.2em] text-gray-400"
+            class="space-y-8 text-sm uppercase tracking-[0.2em] text-gray-400"
           >
-            <p>Calle Principal 42, Centro Histórico</p>
-            <p>+34 900 000 000</p>
-            <p>reservas@cafecentral.com</p>
+            <div>
+                <h4 class="text-white mb-2 font-bold">Ubicación</h4>
+                <p>Calle Velázquez 42, Barrio Salamanca<br>28001 Madrid, España</p>
+            </div>
+            
+            <div>
+                <h4 class="text-white mb-2 font-bold">Contacto</h4>
+                <a href="tel:+34910000000" class="hover:text-gold-400 transition-colors block mb-1">+34 910 000 000</a>
+                <a href="mailto:reservas@cafecentral.es" class="hover:text-gold-400 transition-colors">reservas@cafecentral.es</a>
+            </div>
+
+            <div class="flex gap-4 pt-4">
+                <a href="#" class="w-10 h-10 border border-white/20 rounded-full flex items-center justify-center hover:bg-gold-400 hover:border-gold-400 hover:text-coffee-900 transition-all">
+                    <i class="ph-fill ph-instagram-logo text-lg"></i>
+                </a>
+                <a href="#" class="w-10 h-10 border border-white/20 rounded-full flex items-center justify-center hover:bg-gold-400 hover:border-gold-400 hover:text-coffee-900 transition-all">
+                    <i class="ph-fill ph-twitter-logo text-lg"></i>
+                </a>
+            </div>
           </div>
         </div>
 
-        <form class="reveal space-y-8">
-          <input
-            type="text"
-            placeholder="TU NOMBRE"
-            class="w-full bg-transparent border-b border-white/20 py-4 outline-none focus:border-gold-400 transition-colors text-xs tracking-widest"
-          />
-          <input
-            type="email"
-            placeholder="TU EMAIL"
-            class="w-full bg-transparent border-b border-white/20 py-4 outline-none focus:border-gold-400 transition-colors text-xs tracking-widest"
-          />
-          <button
-            class="w-full py-6 bg-gold-400 text-coffee-900 font-bold text-[10px] uppercase tracking-[0.4em] hover:bg-white transition-all"
-          >
-            Confirmar Solicitud
-          </button>
+        <form id="reservationForm" class="reveal bg-white/5 p-8 md:p-12 rounded-3xl border border-white/10 backdrop-blur-sm">
+          <div class="space-y-8">
+            <div class="group">
+                <label class="text-[9px] uppercase tracking-widest text-gold-400 mb-2 block">Nombre Completo</label>
+                <input
+                    type="text"
+                    required
+                    placeholder="Ej. Carlos Martínez"
+                    class="w-full bg-transparent border-b border-white/20 py-3 outline-none focus:border-gold-400 transition-colors text-sm tracking-wide placeholder-gray-600 font-light text-white"
+                />
+            </div>
+            
+            <div class="grid grid-cols-2 gap-8">
+                <div class="group">
+                    <label class="text-[9px] uppercase tracking-widest text-gold-400 mb-2 block">Fecha</label>
+                    <input
+                        type="date"
+                        required
+                        class="w-full bg-transparent border-b border-white/20 py-3 outline-none focus:border-gold-400 transition-colors text-sm tracking-wide text-gray-400 font-light"
+                    />
+                </div>
+                <div class="group">
+                    <label class="text-[9px] uppercase tracking-widest text-gold-400 mb-2 block">Personas</label>
+                    <select class="w-full bg-transparent border-b border-white/20 py-3 outline-none focus:border-gold-400 transition-colors text-sm tracking-wide text-gray-400 font-light appearance-none">
+                        <option class="bg-coffee-900">2 Personas</option>
+                        <option class="bg-coffee-900">3 Personas</option>
+                        <option class="bg-coffee-900">4+ Personas</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="group">
+                <label class="text-[9px] uppercase tracking-widest text-gold-400 mb-2 block">Email</label>
+                <input
+                    type="email"
+                    required
+                    placeholder="correo@ejemplo.com"
+                    class="w-full bg-transparent border-b border-white/20 py-3 outline-none focus:border-gold-400 transition-colors text-sm tracking-wide placeholder-gray-600 font-light text-white"
+                />
+            </div>
+
+            <button
+                type="submit"
+                class="w-full py-5 bg-gold-400 text-coffee-900 font-bold text-[11px] uppercase tracking-[0.4em] hover:bg-white transition-all mt-8 rounded-sm relative overflow-hidden group"
+            >
+                <span class="relative z-10 group-hover:text-coffee-900 transition-colors">Confirmar Reserva</span>
+            </button>
+          </div>
         </form>
       </div>
 
       <div
-        class="border-t border-white/5 pt-12 text-center text-[8px] uppercase tracking-[0.5em] text-gray-600"
+        class="border-t border-white/5 pt-12 flex flex-col md:flex-row justify-between items-center text-[9px] uppercase tracking-[0.3em] text-gray-600 gap-6"
       >
-        &copy; 2024 Café Central — Design Elite
+        <span>&copy; 2024 Café Central</span>
+        <div class="flex gap-6">
+            <a href="#" class="hover:text-white transition-colors">Privacidad</a>
+            <a href="#" class="hover:text-white transition-colors">Cookies</a>
+            <a href="#" class="hover:text-white transition-colors">Legal</a>
+        </div>
       </div>
     </footer>
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-       
+        
         const nav = document.getElementById("navbar");
+        const sections = document.querySelectorAll("section, header, footer");
+        const navLinks = document.querySelectorAll(".nav-link");
+
         window.addEventListener("scroll", () => {
-          if (window.scrollY > 100) nav.classList.add("nav-scrolled");
+          if (window.scrollY > 50) nav.classList.add("nav-scrolled");
           else nav.classList.remove("nav-scrolled");
+
+          let current = "";
+          sections.forEach((section) => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.clientHeight;
+            if (scrollY >= sectionTop - 200) { 
+              current = section.getAttribute("id");
+            }
+          });
+
+          navLinks.forEach((link) => {
+            link.classList.remove("active-link", "text-gold-400");
+            link.classList.add("text-gray-300"); 
+            if (link.getAttribute("href").includes(current)) {
+              link.classList.add("active-link");
+              link.classList.remove("text-gray-300");
+            }
+          });
         });
 
         const observer = new IntersectionObserver(
           (entries) => {
             entries.forEach((entry) => {
-              if (entry.isIntersecting) entry.target.classList.add("active");
+              if (entry.isIntersecting) {
+                  entry.target.classList.add("active");
+              }
             });
           },
-          { threshold: 0.1 },
+          { threshold: 0.15 },
         );
         document
           .querySelectorAll(".reveal")
           .forEach((el) => observer.observe(el));
+
+
+        const form = document.getElementById('reservationForm');
+        const toast = document.getElementById('toast');
+        const submitBtn = form.querySelector('button');
+        const originalBtnText = submitBtn.innerHTML;
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            submitBtn.innerHTML = '<span class="animate-pulse">Procesando...</span>';
+            submitBtn.classList.add('bg-gray-200', 'cursor-not-allowed');
+            
+            setTimeout(() => {
+                submitBtn.innerHTML = '¡Reserva Enviada!';
+                submitBtn.classList.remove('bg-gray-200', 'cursor-not-allowed');
+                submitBtn.classList.add('bg-green-500', 'text-white');
+                
+                // CORRECCIÓN 3: Mostrar toast correctamente
+                toast.classList.remove('hidden');
+                // Un pequeño delay para que la transición de css funcione (necesita estar renderizado antes de transicionar)
+                requestAnimationFrame(() => {
+                    toast.classList.add('flex'); // Asegurar display flex
+                    toast.classList.remove('translate-x-full');
+                });
+                
+                form.reset();
+                
+                setTimeout(() => {
+                    toast.classList.add('translate-x-full');
+                    
+                    // Esperar a que acabe la animación (500ms) para ocultarlo del todo
+                    setTimeout(() => {
+                        toast.classList.add('hidden');
+                        toast.classList.remove('flex');
+                    }, 500);
+
+                    submitBtn.innerHTML = originalBtnText;
+                    submitBtn.classList.remove('bg-green-500', 'text-white');
+                }, 4000);
+                
+            }, 1500);
+        });
+
 
         const ctxFlavor = document
           .getElementById("flavorRadar")
@@ -403,19 +635,21 @@
           type: "radar",
           data: {
             labels: [
-              "Acidez",
+              "Acidez (Cítrica)",
               "Cuerpo",
               "Dulzura",
               "Amargor",
-              "Aroma",
+              "Aroma (Floral)",
               "Postgusto",
             ],
             datasets: [
               {
+                label: 'Perfil Lote #240',
                 data: [8, 7, 9, 3, 9, 8],
                 backgroundColor: "rgba(196, 155, 99, 0.2)",
                 borderColor: "#C49B63",
                 pointBackgroundColor: "#2C1B12",
+                pointBorderColor: "#fff",
                 borderWidth: 2,
               },
             ],
@@ -423,15 +657,16 @@
           options: {
             scales: {
               r: {
-                ticks: { display: false },
-                grid: { color: "rgba(44, 27, 18, 0.1)" },
+                ticks: { display: false, max: 10 },
+                grid: { color: "rgba(44, 27, 18, 0.05)" },
                 pointLabels: {
-                  font: { family: "Inter", size: 10 },
-                  color: "#120C09",
+                  font: { family: "Inter", size: 10, weight: '600' },
+                  color: "#4A3B32",
                 },
               },
             },
             plugins: { legend: { display: false } },
+            animation: { duration: 2000 }
           },
         });
 
@@ -460,7 +695,9 @@
               {
                 data: trafficData[0],
                 backgroundColor: "#2C1B12",
-                borderRadius: 8,
+                hoverBackgroundColor: "#C49B63",
+                borderRadius: 4,
+                barPercentage: 0.6,
               },
             ],
           },
@@ -469,9 +706,23 @@
             maintainAspectRatio: false,
             scales: {
               y: { display: false, max: 100 },
-              x: { grid: { display: false }, ticks: { font: { size: 9 } } },
+              x: { grid: { display: false }, ticks: { font: { size: 10, family: 'Inter' }, color: '#888' } },
             },
-            plugins: { legend: { display: false } },
+            plugins: { 
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: '#120C09',
+                    titleFont: { family: 'Playfair Display' },
+                    padding: 10,
+                    cornerRadius: 0
+                }
+            },
+            animation: {
+                y: {
+                    duration: 1000,
+                    easing: 'easeOutQuart'
+                }
+            }
           },
         });
 
@@ -479,11 +730,12 @@
         document.querySelectorAll(".day-btn").forEach((btn) => {
           btn.addEventListener("click", function () {
             document.querySelectorAll(".day-btn").forEach((b) => {
-              b.classList.remove("bg-coffee-800", "text-white");
-              b.classList.add("bg-gray-100", "text-gray-400");
+              b.classList.remove("bg-coffee-800", "text-white", "shadow-lg");
+              b.classList.add("text-gray-500");
             });
-            this.classList.add("bg-coffee-800", "text-white");
-            this.classList.remove("bg-gray-100", "text-gray-400");
+            this.classList.add("bg-coffee-800", "text-white", "shadow-lg");
+            this.classList.remove("text-gray-500");
+            
             trafficChart.data.datasets[0].data = trafficData[this.dataset.day];
             trafficChart.update();
           });
@@ -492,4 +744,3 @@
     </script>
   </body>
 </html>
-
