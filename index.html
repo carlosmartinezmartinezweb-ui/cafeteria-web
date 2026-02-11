@@ -7,14 +7,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#120C09" />
     
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/924/924514.png" />
     
     <title>Café Central | Elite Experience</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Iconos Phosphor -->
+
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     
     <link
@@ -52,13 +51,10 @@
     </script>
 
     <style>
-      /* --- CORRECCIÓN 1: Eliminado Scroll Snap para evitar "trompicones" --- */
-      /* Ahora el scroll es 100% fluido y natural */
       
       body {
         background-color: #fdfbf7;
         color: #120c09;
-        /* Aseguramos que no haya scroll horizontal accidental */
         overflow-x: hidden;
       }
       
@@ -66,7 +62,6 @@
         overflow-x: hidden;
       }
 
-      /* Animaciones de entrada mejoradas */
       .reveal {
         opacity: 0;
         transform: translateY(40px);
@@ -78,7 +73,6 @@
         transform: translateY(0);
       }
 
-      /* Efectos de Imágenes */
       .img-zoom {
         overflow: hidden;
         position: relative;
@@ -92,7 +86,6 @@
         transform: scale(1.05);
       }
 
-      /* Navbar Glassmorphism */
       .nav-scrolled {
         background-color: rgba(18, 12, 9, 0.85);
         backdrop-filter: blur(12px);
@@ -103,7 +96,7 @@
       }
 
       .active-link {
-        color: #C49B63 !important; /* Gold 400 */
+        color: #C49B63 !important;
         position: relative;
       }
       
@@ -133,7 +126,6 @@
   </head>
   <body class="font-sans antialiased selection:bg-gold-400 selection:text-coffee-900">
 
-    <!-- CORRECCIÓN 2: Añadido 'hidden' para que no aparezca fantasma a la derecha -->
     <div id="toast" class="hidden fixed top-24 right-8 bg-white border-l-4 border-gold-400 text-coffee-900 px-6 py-4 shadow-2xl rounded-r transform translate-x-full transition-transform duration-500 z-50 items-center gap-4">
       <i class="ph-fill ph-check-circle text-2xl text-green-600"></i>
       <div>
@@ -601,11 +593,9 @@
                 submitBtn.classList.remove('bg-gray-200', 'cursor-not-allowed');
                 submitBtn.classList.add('bg-green-500', 'text-white');
                 
-                // CORRECCIÓN 3: Mostrar toast correctamente
                 toast.classList.remove('hidden');
-                // Un pequeño delay para que la transición de css funcione (necesita estar renderizado antes de transicionar)
                 requestAnimationFrame(() => {
-                    toast.classList.add('flex'); // Asegurar display flex
+                    toast.classList.add('flex'); 
                     toast.classList.remove('translate-x-full');
                 });
                 
@@ -613,8 +603,6 @@
                 
                 setTimeout(() => {
                     toast.classList.add('translate-x-full');
-                    
-                    // Esperar a que acabe la animación (500ms) para ocultarlo del todo
                     setTimeout(() => {
                         toast.classList.add('hidden');
                         toast.classList.remove('flex');
@@ -744,3 +732,4 @@
     </script>
   </body>
 </html>
+
